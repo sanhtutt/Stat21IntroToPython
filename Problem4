@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # Part 2-3: Initialize population variables and growth rates
 initial_population = 100
-worst_growth_rate = -0.04500  # Worst-case scenario where population naturally declines
+worst_growth_rate = -0.04500
 years_10 = 10
 years_25 = 25
 
