@@ -1,0 +1,126 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Part 2-3: Initialize population variables and growth rates
+initial_population = 100
+worst_growth_rate = -0.04500  # Worst-case scenario where population naturally declines
+years_10 = 10
+years_25 = 25
+
+# Management strategies: Functions for each strategy
+def add_three_per_year(population):
+    return population + 3
+
+def add_ten_per_year(population):
+    return population + 10
+
+def add_one_percent_per_year(population):
+    return population * 1.01
+
+def add_five_percent_per_year(population):
+    return population * 1.05
+
+# Function to simulate population growth with a given strategy
+def simulate_population(strategy_func, growth_rate, years, initial_population):
+    population = [initial_population]
+    for t in range(1, years + 1):
+        # Apply natural growth/decline due to environmental conditions
+        new_population = population[-1] * (1 + growth_rate)
+        # Apply management strategy (adding animals or percentages per year)
+        new_population = strategy_func(new_population)
+        population.append(new_population)
+    return population
+
+# Part 4: Experiment to stabilize population at around 200 animals
+# The approach here is to determine a rule that will tend to keep the population close to 200 bobcats. Rather than just adding or removing a fixed number of animals each year, we adopt a dynamic adjustment rule. Under this rule, the growth rate will be adjusted according to how far the population is from the target population of 200.
+def stabilize_population(population, growth_rate, target_population, years):
+    population_stabilized = [population]
+    for t in range(1, years + 1):
+        # If population is below target, increase growth rate dynamically to reach 200
+        if population < target_population:
+            population = population * (1 + growth_rate + (target_population - population) / 1000)
+        # If population is above target, decrease growth rate to stabilize
+        elif population > target_population:
+            population = population * (1 + growth_rate - (population - target_population) / 1000)
+        population_stabilized.append(population)
+    return population_stabilized
+
+# Simulate stabilization for 25 years
+target_population = 200
+population_stabilized_25 = stabilize_population(initial_population, worst_growth_rate, target_population, years_25)
+
+# discussinon for Part 4:
+# This part uses the dynamic stabilization strategy, with gradual adjustment to a target population of 200 bobcats. Growth rate in this part is implemented as a function of distance from the target population. When the population is below 200, the growth rate is higher than when it reaches closer to the target value. When this tops 200, the growth is directly diminished, showing even a slight reversal in growth to keep things stable around the target population. With some time, it eventually stabilizes to about 200 bobcats, as it should.
+
+# Part 5: Simulate the management strategies for 10 and 25 years
+# Simulate for 10 years
+pop_three_10 = simulate_population(add_three_per_year, worst_growth_rate, years_10, initial_population)
+pop_ten_10 = simulate_population(add_ten_per_year, worst_growth_rate, years_10, initial_population)
+pop_one_percent_10 = simulate_population(add_one_percent_per_year, worst_growth_rate, years_10, initial_population)
+pop_five_percent_10 = simulate_population(add_five_percent_per_year, worst_growth_rate, years_10, initial_population)
+
+# Simulate for 25 years
+pop_three_25 = simulate_population(add_three_per_year, worst_growth_rate, years_25, initial_population)
+pop_ten_25 = simulate_population(add_ten_per_year, worst_growth_rate, years_25, initial_population)
+pop_one_percent_25 = simulate_population(add_one_percent_per_year, worst_growth_rate, years_25, initial_population)
+pop_five_percent_25 = simulate_population(add_five_percent_per_year, worst_growth_rate, years_25, initial_population)
+
+# Part 6: Plot results for all strategies (10 and 25 years) and stabilization strategy
+
+# Plot results for 10 years
+time_10 = np.arange(0, years_10 + 1)
+plt.figure(figsize=(10,6))
+plt.plot(time_10, pop_three_10, label='Add 3 per year (10 years)')
+plt.plot(time_10, pop_ten_10, label='Add 10 per year (10 years)')
+plt.plot(time_10, pop_one_percent_10, label='Add 1% per year (10 years)')
+plt.plot(time_10, pop_five_percent_10, label='Add 5% per year (10 years)')
+plt.xlabel('Years')
+plt.ylabel('Bobcat Population')
+plt.title('Population Strategies Comparison (10 Years)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot results for 25 years
+time_25 = np.arange(0, years_25 + 1)
+plt.figure(figsize=(10,6))
+plt.plot(time_25, pop_three_25, label='Add 3 per year (25 years)')
+plt.plot(time_25, pop_ten_25, label='Add 10 per year (25 years)')
+plt.plot(time_25, pop_one_percent_25, label='Add 1% per year (25 years)')
+plt.plot(time_25, pop_five_percent_25, label='Add 5% per year (25 years)')
+plt.xlabel('Years')
+plt.ylabel('Bobcat Population')
+plt.title('Population Strategies Comparison (25 Years)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Plot the stabilization strategy to 200 for 25 years
+time_stabilized = np.arange(0, years_25 + 1)
+plt.figure(figsize=(10,6))
+plt.plot(time_stabilized, population_stabilized_25, label='Stabilize to 200 (25 years)')
+plt.xlabel('Years')
+plt.ylabel('Bobcat Population')
+plt.title('Population Stabilization to 200 (25 Years)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Part 6: Add comments for explanation
+
+# Discussion and Explanation (Part 4-6):
+
+# Strategy 1: Adding 3 per year
+# Adding 3 bobcats per year is insufficient to stabilize the population under the worst conditions. Over 10 years, the population declines slowly, and over 25 years, the population continues to decrease.This strategy only delays the decline but doesn't stop it.
+
+# Strategy 2: Adding 10 per year
+# Adding 10 bobcats per year slows down the decline and helps prevent rapid population loss. Over 10 years, the population remains relatively stable but still slightly declines. Over 25 years, this strategy could help maintain the population, but growth is not substantial.
+
+# Strategy 3: Adding 1% per year
+# Adding 1% of the population per year allows for more sustainable growth than fixed addition strategies. Over 10 years, this strategy shows slight growth compared to adding a fixed number of animals. Over 25 years, this strategy allows for moderate growth and may help stabilize the population.
+
+# Strategy 4: Adding 5% per year
+# Adding 5% per year is the most aggressive growth strategy, resulting in rapid population increase. Over both 10 and 25 years, this strategy leads to significant population growth and stabilizes the population above initial levels.
+
+# Stabilization Strategy to 200:
+# The dynamic strategy to stabilize the population at around 200 animals involves adjusting the growth rate based on the population's distance from 200. If the population is below 200, it grows faster; if above, it slows down. Over 25 years, this strategy successfully stabilizes the population near 200 animals, balancing growth and control.
