@@ -3,7 +3,11 @@ import matplotlib.pyplot as plt
 
 # Part 2-3: Initialize population variables and growth rates
 initial_population = 100
+<<<<<<< HEAD
 worst_growth_rate = -0.04500 
+=======
+worst_growth_rate = -0.04500
+>>>>>>> 9b967034cc5d091c5d8026e97b0d1ce89295167a
 years_10 = 10
 years_25 = 25
 
